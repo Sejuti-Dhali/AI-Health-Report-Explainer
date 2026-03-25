@@ -123,11 +123,35 @@ REFERENCE_RANGES = {
 }
 def get_range_context() -> str:
     """
-    Returns a plain-text summary of all reference ranges.
-    This gets injected into the LLM system prompt.
+    Returns a clean, well-formatted plain-text summary of all reference ranges.
+    This is injected into the LLM system prompt.
     """
     lines = ["REFERENCE RANGES FOR CLASSIFICATION:\n"]
+    
     for test, data in REFERENCE_RANGES.items():
         unit = data.get("unit", "")
-        lines.append(f"- {test} ({unit}): {data}")
+        lines.append(f"• {test} ({unit}):")
+        
+        # Gender-specific ranges
+        if "male" in data and "female" in data:
+            m = data["male"]
+            f = data["female"]
+            lines.append(f"    Male   : {m.get('low', '–')} – {m.get('high', '–')}")
+            lines.append(f"    Female : {f.get('low', '–')} – {f.get('high', '–')}")
+        
+        # General low-high
+        elif "low" in data and "high" in data:
+            lines.append(f"    Normal : {data['low']} – {data['high']}")
+        
+        # Different thresholds (like HbA1c, Cholesterol, etc.)
+        else:
+            for key, value in data.items():
+                if key not in ["unit", "flag", "note", "borderline_gap"]:
+                    if isinstance(value, dict):
+                        lines.append(f"    {key.replace('_', ' ').title()}: {value}")
+                    else:
+                        lines.append(f"    {key.replace('_', ' ').title()}: {value}")
+        
+        lines.append("")  # empty line between tests
+
     return "\n".join(lines)
