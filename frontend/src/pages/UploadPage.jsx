@@ -1,4 +1,4 @@
-﻿import { useState } from "react"
+import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
@@ -10,17 +10,38 @@ export default function UploadPage() {
 
   const handleUpload = async () => {
     if (!file) return
+
     setLoading(true)
     setError("")
+
     const formData = new FormData()
     formData.append("file", file)
     formData.append("language", "english")
+
     try {
-      const res = await axios.post("http://localhost:8000/api/upload", formData)
-      navigate("/result", { state: { data: res.data, language: "english" } })
-    } catch (err) {
-      setError("Upload failed. Please check your file and try again.")
-    } finally {
+  const res = await axios.post(
+    "http://localhost:8000/api/analyze",
+    formData,
+    {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    }
+  )
+
+  console.log("API RESPONSE:", res.data)
+
+  navigate("/result", {
+    state: {
+      data: res.data,
+      language: "english",
+    },
+  })
+} catch (err) {
+  console.error("FULL ERROR:", err.response?.data || err)
+  setError("Upload failed. Please check your file and try again.")
+}
+finally {
       setLoading(false)
     }
   }
@@ -30,29 +51,42 @@ export default function UploadPage() {
       <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
         <div className="text-center mb-6">
           <h1 className="text-2xl font-bold text-gray-900">MediScan AI</h1>
-          <p className="text-gray-500 text-sm mt-1">Upload your lab report for instant explanation</p>
+          <p className="text-gray-500 text-sm mt-1">
+            Upload your lab report for instant explanation
+          </p>
+          
         </div>
+
         <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors mb-4">
           <input
             type="file"
             className="hidden"
             accept=".pdf,.png,.jpg,.jpeg"
-            onChange={e => setFile(e.target.files[0])}
+            onChange={(e) => setFile(e.target.files[0])}
           />
+
           {file ? (
             <div>
-              <p className="text-green-600 font-medium">checkmark {file.name}</p>
-              <p className="text-gray-400 text-xs mt-1">Click to change file</p>
+              <p className="text-green-600 font-medium">✓ {file.name}</p>
+              <p className="text-gray-400 text-xs mt-1">
+                Click to change file
+              </p>
             </div>
           ) : (
             <div>
-              <p className="text-4xl mb-2">doc</p>
-              <p className="text-gray-600 text-sm">Click to upload PDF or image</p>
-              <p className="text-gray-400 text-xs mt-1">PDF, PNG, JPG supported</p>
+              <p className="text-4xl mb-2">📄</p>
+              <p className="text-gray-600 text-sm">
+                Click to upload PDF or image
+              </p>
+              <p className="text-gray-400 text-xs mt-1">
+                PDF, PNG, JPG supported
+              </p>
             </div>
           )}
         </label>
+
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
+
         <button
           onClick={handleUpload}
           disabled={!file || loading}
@@ -60,8 +94,9 @@ export default function UploadPage() {
         >
           {loading ? "Analyzing..." : "Analyze Report"}
         </button>
+
         <p className="text-xs text-gray-400 text-center mt-4">
-          This tool explains reports. It does not replace a doctor.
+          ⚠️ This tool explains reports. It does not replace a doctor.
         </p>
       </div>
     </div>

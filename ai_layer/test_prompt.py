@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 load_dotenv(os.path.join(os.path.dirname(__file__), ".env"))
 
 from groq import Groq
-from backend.prompts.prompts import get_prompt
+from prompts.prompts import get_prompt
 
 client = Groq(api_key=os.environ["GROQ_API_KEY"])
 
