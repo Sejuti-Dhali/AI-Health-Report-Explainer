@@ -1,157 +1,44 @@
 REFERENCE_RANGES = {
-
-    # ── CBC (Complete Blood Count) ──────────────────────────
     "Hemoglobin": {
-        "male":   {"low": 13.5, "high": 17.5},
-        "female": {"low": 12.0, "high": 15.5},
-        "unit": "g/dL",
-        "borderline_gap": 1.0
+        "male":   {"low": 13.5, "high": 17.5, "unit": "g/dL"},
+        "female": {"low": 12.0, "high": 15.5, "unit": "g/dL"},
     },
-    "WBC": {
-        "low": 4.0, "high": 11.0,
-        "unit": "×10³/µL"
-    },
-    "Platelets": {
-        "low": 150, "high": 400,
-        "unit": "×10³/µL"
-    },
-    "RBC": {
-        "male":   {"low": 4.5, "high": 5.9},
-        "female": {"low": 4.0, "high": 5.2},
-        "unit": "×10⁶/µL"
-    },
-
-    # ── Blood Sugar ─────────────────────────────────────────
+    "WBC": {"low": 4.0, "high": 11.0, "unit": "×10³/µL"},
+    "Platelets": {"low": 150, "high": 400, "unit": "×10³/µL"},
     "Blood Glucose (Fasting)": {
-        "normal_max": 99,
-        "prediabetes_max": 125,
-        "unit": "mg/dL",
-        "flag": {
-            "normal":     "Blood sugar is within healthy range.",
-            "prediabetes":"Slightly elevated. Lifestyle changes recommended.",
-            "high":       "May indicate diabetes risk. Consult a doctor."
-        }
-    },
-    "Blood Glucose (Random)": {
-        "normal_max": 139,
-        "prediabetes_max": 199,
-        "unit": "mg/dL"
+        "normal_max": 99, "prediabetes_max": 125, "unit": "mg/dL"
     },
     "HbA1c": {
-        "normal_max": 5.6,
-        "prediabetes_max": 6.4,
-        "unit": "%",
-        "flag": {
-            "normal":     "Good long-term blood sugar control.",
-            "prediabetes":"Indicates prediabetes risk.",
-            "high":       "Indicates possible diabetes. Please see a doctor."
-        }
+        "normal_max": 5.6, "prediabetes_max": 6.4, "unit": "%"
     },
-
-    # ── Lipid Panel ─────────────────────────────────────────
     "Total Cholesterol": {
-        "normal_max": 199,
-        "borderline_max": 239,
-        "unit": "mg/dL"
+        "normal_max": 200, "borderline_max": 239, "unit": "mg/dL"
     },
-    "LDL Cholesterol": {
-        "optimal_max": 99,
-        "normal_max": 129,
-        "borderline_max": 159,
-        "unit": "mg/dL"
-    },
-    "HDL Cholesterol": {
-        "male_low": 40,
-        "female_low": 50,
-        "unit": "mg/dL",
-        "note": "Higher is better for HDL"
-    },
+    "LDL": {"normal_max": 100, "unit": "mg/dL"},
+    "HDL": {"male_min": 40, "female_min": 50, "unit": "mg/dL"},
     "Triglycerides": {
-        "normal_max": 149,
-        "borderline_max": 199,
-        "unit": "mg/dL"
+        "normal_max": 150, "borderline_max": 199, "unit": "mg/dL"
     },
-
-    # ── Kidney Function ─────────────────────────────────────
     "Creatinine": {
-        "male":   {"low": 0.74, "high": 1.35},
-        "female": {"low": 0.59, "high": 1.04},
-        "unit": "mg/dL"
+        "male":   {"low": 0.74, "high": 1.35, "unit": "mg/dL"},
+        "female": {"low": 0.59, "high": 1.04, "unit": "mg/dL"},
     },
-    "BUN": {
-        "low": 7, "high": 20,
-        "unit": "mg/dL"
-    },
+    "TSH": {"low": 0.4, "high": 4.0, "unit": "mIU/L"},
+    "ALT": {"normal_max": 40, "unit": "U/L"},
+    "AST": {"normal_max": 40, "unit": "U/L"},
+    "Bilirubin (Total)": {"normal_max": 1.2, "unit": "mg/dL"},
     "Uric Acid": {
-        "male":   {"high": 7.0},
-        "female": {"high": 6.0},
-        "unit": "mg/dL"
+        "male":   {"normal_max": 7.0, "unit": "mg/dL"},
+        "female": {"normal_max": 6.0, "unit": "mg/dL"},
     },
-
-    # ── Liver Function ──────────────────────────────────────
-    "ALT": {
-        "male":   {"high": 40},
-        "female": {"high": 31},
-        "unit": "U/L"
-    },
-    "AST": {
-        "high": 40,
-        "unit": "U/L"
-    },
-    "Bilirubin (Total)": {
-        "high": 1.2,
-        "unit": "mg/dL"
-    },
-
-    # ── Thyroid ─────────────────────────────────────────────
-    "TSH": {
-        "low": 0.4, "high": 4.0,
-        "unit": "mIU/L",
-        "flag": {
-            "low":  "May indicate hyperthyroidism (overactive thyroid).",
-            "high": "May indicate hypothyroidism (underactive thyroid)."
-        }
-    },
-    "T3": {
-        "low": 80, "high": 200,
-        "unit": "ng/dL"
-    },
-    "T4": {
-        "low": 5.1, "high": 14.1,
-        "unit": "µg/dL"
-    },
+    "Sodium": {"low": 136, "high": 145, "unit": "mEq/L"},
+    "Potassium": {"low": 3.5, "high": 5.1, "unit": "mEq/L"},
+    "Calcium": {"low": 8.5, "high": 10.5, "unit": "mg/dL"},
 }
-def get_range_context() -> str:
-    """
-    Returns a clean, well-formatted plain-text summary of all reference ranges.
-    This is injected into the LLM system prompt.
-    """
-    lines = ["REFERENCE RANGES FOR CLASSIFICATION:\n"]
-    
-    for test, data in REFERENCE_RANGES.items():
-        unit = data.get("unit", "")
-        lines.append(f"• {test} ({unit}):")
-        
-        # Gender-specific ranges
-        if "male" in data and "female" in data:
-            m = data["male"]
-            f = data["female"]
-            lines.append(f"    Male   : {m.get('low', '–')} – {m.get('high', '–')}")
-            lines.append(f"    Female : {f.get('low', '–')} – {f.get('high', '–')}")
-        
-        # General low-high
-        elif "low" in data and "high" in data:
-            lines.append(f"    Normal : {data['low']} – {data['high']}")
-        
-        # Different thresholds (like HbA1c, Cholesterol, etc.)
-        else:
-            for key, value in data.items():
-                if key not in ["unit", "flag", "note", "borderline_gap"]:
-                    if isinstance(value, dict):
-                        lines.append(f"    {key.replace('_', ' ').title()}: {value}")
-                    else:
-                        lines.append(f"    {key.replace('_', ' ').title()}: {value}")
-        
-        lines.append("")  # empty line between tests
 
+
+def get_range_context() -> str:
+    lines = []
+    for test, ranges in REFERENCE_RANGES.items():
+        lines.append(f"- {test}: {ranges}")
     return "\n".join(lines)

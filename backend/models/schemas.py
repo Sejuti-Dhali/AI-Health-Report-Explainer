@@ -1,7 +1,3 @@
-"""
-Pydantic Schemas for AI Health Report Explainer
-"""
-
 from pydantic import BaseModel
 from typing import List, Optional
 from enum import Enum
@@ -39,9 +35,3 @@ class ChatRequest(BaseModel):
 class ChatResponse(BaseModel):
     answer: str
     disclaimer: str
-
-
-# For debugging / testing
-if __name__ == "__main__":
-    print("✅ schemas.py loaded successfully!")
-    print(f"StatusEnum: {list(StatusEnum)}")
