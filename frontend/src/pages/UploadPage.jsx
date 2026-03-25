@@ -1,10 +1,9 @@
-import { useState } from "react"
+﻿import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom"
 
 export default function UploadPage() {
   const [file, setFile] = useState(null)
-  const [language, setLanguage] = useState("english")
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState("")
   const navigate = useNavigate()
@@ -15,11 +14,10 @@ export default function UploadPage() {
     setError("")
     const formData = new FormData()
     formData.append("file", file)
-    formData.append("language", language)
-
+    formData.append("language", "english")
     try {
       const res = await axios.post("http://localhost:8000/api/upload", formData)
-      navigate("/result", { state: { data: res.data, language } })
+      navigate("/result", { state: { data: res.data, language: "english" } })
     } catch (err) {
       setError("Upload failed. Please check your file and try again.")
     } finally {
@@ -34,32 +32,6 @@ export default function UploadPage() {
           <h1 className="text-2xl font-bold text-gray-900">MediScan AI</h1>
           <p className="text-gray-500 text-sm mt-1">Upload your lab report for instant explanation</p>
         </div>
-
-        {/* Language Toggle */}
-        <div className="flex gap-2 mb-6">
-          <button
-            onClick={() => setLanguage("english")}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              language === "english"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            English
-          </button>
-          <button
-            onClick={() => setLanguage("bangla")}
-            className={`flex-1 py-2 rounded-lg text-sm font-medium transition-colors ${
-              language === "bangla"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
-            }`}
-          >
-            বাংলা
-          </button>
-        </div>
-
-        {/* Upload Area */}
         <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors mb-4">
           <input
             type="file"
@@ -69,20 +41,18 @@ export default function UploadPage() {
           />
           {file ? (
             <div>
-              <p className="text-green-600 font-medium">✓ {file.name}</p>
+              <p className="text-green-600 font-medium">checkmark {file.name}</p>
               <p className="text-gray-400 text-xs mt-1">Click to change file</p>
             </div>
           ) : (
             <div>
-              <p className="text-4xl mb-2">📄</p>
+              <p className="text-4xl mb-2">doc</p>
               <p className="text-gray-600 text-sm">Click to upload PDF or image</p>
               <p className="text-gray-400 text-xs mt-1">PDF, PNG, JPG supported</p>
             </div>
           )}
         </label>
-
         {error && <p className="text-red-500 text-sm mb-3">{error}</p>}
-
         <button
           onClick={handleUpload}
           disabled={!file || loading}
@@ -90,9 +60,8 @@ export default function UploadPage() {
         >
           {loading ? "Analyzing..." : "Analyze Report"}
         </button>
-
         <p className="text-xs text-gray-400 text-center mt-4">
-          ⚠️ This tool explains reports. It does not replace a doctor.
+          This tool explains reports. It does not replace a doctor.
         </p>
       </div>
     </div>
