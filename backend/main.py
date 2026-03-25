@@ -1,28 +1,18 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from backend.api.routes import router
+from dotenv import load_dotenv
 
-from api.routes import router
+load_dotenv()
 
-app = FastAPI(
-    title="Medical Report Analyzer API",
-    description="Analyzes medical reports using OCR and LLM, with Bangla translation support.",
-    version="1.0.0",
-)
-
+app = FastAPI(title="MediScan AI", version="1.0")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # React dev server; update for production
+    allow_origins=["http://localhost:3000"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-
 app.include_router(router, prefix="/api")
-
-
-
-@app.get("/health", tags=["Health"])
-def health_check():
-    return {"status": "ok", "message": "Medical Report Analyzer API is running."}
