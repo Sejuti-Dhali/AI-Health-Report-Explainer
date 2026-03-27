@@ -1,33 +1,24 @@
+import React from "react";
+
 export default function UrgentBanner({ show }) {
-  if (!show) return null
+  if (!show) return null;
 
   return (
-    <div className="mb-6 rounded-2xl border-2 border-red-500 bg-red-50 p-5 shadow-sm">
+    <div className="mb-8 rounded-3xl border border-red-200 bg-red-50 p-6 shadow-sm">
       <div className="flex items-start gap-4">
-
-        {/* Icon */}
-        <div className="flex-shrink-0 w-10 h-10 bg-red-100 text-red-600 rounded-full flex items-center justify-center text-2xl">
-          ⚠️
-        </div>
-
-        {/* Content */}
-        <div className="flex-1">
-          <h3 className="text-red-800 font-semibold text-lg leading-tight">
-            দ্রুত ডাক্তারের পরামর্শ নিন
-          </h3>
-
-          <p className="text-red-700 mt-2 text-[15px] leading-relaxed">
-            আপনার রিপোর্টে এক বা একাধিক পরীক্ষার ফলাফল উদ্বেগজনক।
-            অনুগ্রহ করে যত তাড়াতাড়ি সম্ভব একজন যোগ্য ডাক্তারের সাথে যোগাযোগ করুন।
+        <div className="mt-1 text-2xl">⚠️</div>
+        <div>
+          <h2 className="text-2xl font-semibold text-red-700">
+            Higher-risk result summary
+          </h2>
+          <p className="mt-2 text-base leading-7 text-red-700">
+            Medical review is recommended, especially if symptoms are present.
           </p>
-
-          <div className="mt-3 text-xs text-red-600 font-medium flex items-center gap-1">
-            <span>🩺</span>
-            এটা শুধুমাত্র AI ভিত্তিক সতর্কতা — চূড়ান্ত সিদ্ধান্ত ডাক্তারই নেবেন।
-          </div>
+          <p className="mt-2 text-sm text-red-600">
+            This is not a diagnosis. A qualified clinician should confirm the result.
+          </p>
         </div>
-
       </div>
     </div>
-  )
+  );
 }

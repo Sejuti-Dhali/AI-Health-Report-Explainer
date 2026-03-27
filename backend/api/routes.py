@@ -1,6 +1,7 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from services.ocr_engine import extract_text_from_file
 from services.llm_parser import parse_report_values, answer_followup_question
+from services.risk_engine import evaluate_test
 from models.schemas import ChatRequest, ChatResponse
 
 router = APIRouter()
@@ -20,8 +21,10 @@ async def upload_report(
 
         parsed = parse_report_values(report_text)
 
-        return {
-            "results": [
+        enriched_results = []
+        for p in parsed.parameters:
+            benchmark = evaluate_test(p.name, p.value, sex="general", age_group="adult")
+            enriched_results.append(
                 {
                     "test": p.name,
                     "value": p.value,
@@ -29,11 +32,18 @@ async def upload_report(
                     "status": p.status.value if hasattr(p.status, "value") else str(p.status),
                     "reference": p.reference_range,
                     "explanation": p.explanation,
+                    "source_label": benchmark.get("source_label"),
+                    "source_type": benchmark.get("source_type"),
+                    "confidence": benchmark.get("confidence"),
+                    "interpretation_mode": benchmark.get("interpretation_mode"),
                 }
-                for p in parsed.parameters
-            ],
+            )
+
+        return {
+            "results": enriched_results,
             "summary": parsed.risk_summary.summary,
             "see_doctor_urgently": parsed.risk_summary.level.lower() == "high",
+            "risk_level": parsed.risk_summary.level,
             "disclaimer": parsed.disclaimer,
         }
 

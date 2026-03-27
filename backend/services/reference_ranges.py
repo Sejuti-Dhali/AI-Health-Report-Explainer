@@ -1,0 +1,58 @@
+REFERENCE_RANGES = {
+    "hemoglobin": {
+        "aliases": ["hemoglobin", "hb"],
+        "min": 13.5,
+        "max": 17.5,
+        "unit": "g/dL",
+        "source": "Mayo Clinic Laboratories / standard adult male CBC interval",
+    },
+    "hematocrit": {
+        "aliases": ["hematocrit", "packed cell volume", "pcv"],
+        "min": 38.8,
+        "max": 50.0,
+        "unit": "%",
+        "source": "Mayo Clinic Laboratories / standard adult male CBC interval",
+    },
+    "rbc": {
+        "aliases": ["rbc", "rbc count"],
+        "min": 4.5,
+        "max": 5.9,
+        "unit": "million/uL",
+        "source": "Mayo Clinic Laboratories / standard adult male CBC interval",
+    },
+    "wbc": {
+        "aliases": ["wbc", "wbc count"],
+        "min": 4.5,
+        "max": 11.0,
+        "unit": "thousand/uL",
+        "source": "Mayo Clinic Laboratories / standard CBC interval",
+    },
+    "platelets": {
+        "aliases": ["platelets", "platelet count"],
+        "min": 150,
+        "max": 400,
+        "unit": "thousand/uL",
+        "source": "Mayo Clinic Laboratories / standard CBC interval",
+    },
+    "mcv": {
+        "aliases": ["mcv", "rbc indices - mcv"],
+        "min": 80,
+        "max": 100,
+        "unit": "fL",
+        "source": "Standard CBC reference interval",
+    },
+    "mch": {
+        "aliases": ["mch", "rbc indices - mch"],
+        "min": 27,
+        "max": 33,
+        "unit": "pg",
+        "source": "Standard CBC reference interval",
+    },
+    "mchc": {
+        "aliases": ["mchc", "rbc indices - mchc"],
+        "min": 32,
+        "max": 36,
+        "unit": "g/dL",
+        "source": "Standard CBC reference interval",
+    },
+}

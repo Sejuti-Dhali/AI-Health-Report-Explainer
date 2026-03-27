@@ -1,0 +1,17 @@
+{
+  "mayo_hgb": {
+    "label": "Mayo Clinic Laboratories HGB",
+    "source_type": "major_lab_catalog",
+    "last_reviewed": "2026-03-27"
+  },
+  "mayo_cbc": {
+    "label": "Mayo Clinic Laboratories CBC",
+    "source_type": "major_lab_catalog",
+    "last_reviewed": "2026-03-27"
+  },
+  "cdc_diabetes_testing": {
+    "label": "CDC Diabetes Testing",
+    "source_type": "public_health_authority",
+    "last_reviewed": "2026-03-27"
+  }
+}
