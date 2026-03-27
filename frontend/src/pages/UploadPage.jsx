@@ -19,29 +19,29 @@ export default function UploadPage() {
     formData.append("language", "english")
 
     try {
-  const res = await axios.post(
-    "http://localhost:8000/api/upload",
-    formData,
-    {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    }
-  )
+      const res = await axios.post(
+        "http://localhost:8000/api/upload",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
 
-  console.log("API RESPONSE:", res.data)
-
-  navigate("/result", {
-    state: {
-      data: res.data,
-      language: "english",
-    },
-  })
-} catch (err) {
-  console.error("FULL ERROR:", err.response?.data || err)
-  setError("Upload failed. Please check your file and try again.")
-}
-finally {
+      navigate("/result", {
+        state: {
+          data: res.data,
+          language: "english",
+        },
+      })
+    } catch (err) {
+      const detail =
+        err?.response?.data?.detail ||
+        "Upload failed. PDF files usually work best."
+      setError(detail)
+      console.error("FULL ERROR:", err.response?.data || err)
+    } finally {
       setLoading(false)
     }
   }
@@ -54,7 +54,9 @@ finally {
           <p className="text-gray-500 text-sm mt-1">
             Upload your lab report for instant explanation
           </p>
-          
+          <p className="text-gray-400 text-xs mt-2">
+            Best results with PDF reports
+          </p>
         </div>
 
         <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors mb-4">
@@ -67,20 +69,14 @@ finally {
 
           {file ? (
             <div>
-              <p className="text-green-600 font-medium">✓ {file.name}</p>
-              <p className="text-gray-400 text-xs mt-1">
-                Click to change file
-              </p>
+              <p className="text-green-600 font-medium">? {file.name}</p>
+              <p className="text-gray-400 text-xs mt-1">Click to change file</p>
             </div>
           ) : (
             <div>
-              <p className="text-4xl mb-2">📄</p>
-              <p className="text-gray-600 text-sm">
-                Click to upload PDF or image
-              </p>
-              <p className="text-gray-400 text-xs mt-1">
-                PDF, PNG, JPG supported
-              </p>
+              <p className="text-4xl mb-2">??</p>
+              <p className="text-gray-600 text-sm">Click to upload PDF or image</p>
+              <p className="text-gray-400 text-xs mt-1">PDF, PNG, JPG supported</p>
             </div>
           )}
         </label>
@@ -96,7 +92,7 @@ finally {
         </button>
 
         <p className="text-xs text-gray-400 text-center mt-4">
-          ⚠️ This tool explains reports. It does not replace a doctor.
+          This tool explains reports. It does not replace a doctor.
         </p>
       </div>
     </div>

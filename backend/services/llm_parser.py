@@ -8,6 +8,11 @@ from prompts.prompts import (
     CHAT_SYSTEM_PROMPT,
     TRANSLATE_BANGLA_PROMPT,
 )
+from services.risk_engine import (
+    compare_to_range,
+    clinical_explanation,
+    summarize_risk,
+)
 
 MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
@@ -36,13 +41,9 @@ def _call_llm(user_prompt: str, system_prompt: str = None, max_tokens: int = 204
     return response.choices[0].message.content or ""
 
 
-def parse_report_values(raw_text: str) -> AnalysisResponse:
-    prompt = PARSE_REPORT_PROMPT.format(raw_text=raw_text)
-    response_text = _call_llm(prompt, max_tokens=2048)
-
+def _extract_json_text(response_text: str) -> str:
     clean = response_text.strip()
 
-    # Extract fenced JSON block if present
     if "```" in clean:
         parts = clean.split("```")
         for part in parts:
@@ -50,48 +51,84 @@ def parse_report_values(raw_text: str) -> AnalysisResponse:
                 clean = part
                 break
 
-    # Remove optional leading 'json'
     clean = clean.replace("json", "").strip()
 
-    # Extract the outermost JSON object
     start = clean.find("{")
     end = clean.rfind("}")
     if start != -1 and end != -1 and end > start:
         clean = clean[start:end + 1]
 
+    return clean
+
+
+def parse_report_values(raw_text: str) -> AnalysisResponse:
+    prompt = PARSE_REPORT_PROMPT.format(raw_text=raw_text[:12000])
+    response_text = _call_llm(prompt, max_tokens=2048)
+
     try:
-        data = json.loads(clean)
+        data = json.loads(_extract_json_text(response_text))
     except json.JSONDecodeError as e:
         print(f"[LLM] JSON parse error: {e}\nRaw: {response_text}")
         return AnalysisResponse(
             parameters=[],
             risk_summary=RiskSummary(
-                level="Unknown",
-                summary="Could not parse the report. Please try again.",
-                recommendations=[],
+                level="Moderate",
+                summary="The report text could not be parsed reliably. Please upload a clearer PDF or review the original report manually.",
+                recommendations=[
+                    "Try uploading a text-based PDF.",
+                    "Review the original report with a clinician if findings are important.",
+                ],
             ),
         )
 
-    parameters = [
-        ReportParameter(
-            name=p.get("name", ""),
-            value=str(p.get("value", "")),
-            unit=p.get("unit"),
-            reference_range=p.get("reference_range"),
-            status=RangeStatus(p.get("status", "unknown")),
-            explanation=p.get("explanation"),
-        )
-        for p in data.get("parameters", [])
-    ]
+    calibrated_parameters = []
 
-    rs = data.get("risk_summary", {})
-    risk_summary = RiskSummary(
-        level=rs.get("level", "Unknown"),
-        summary=rs.get("summary", ""),
-        recommendations=rs.get("recommendations", []),
+    for p in data.get("parameters", []):
+        name = p.get("name", "").strip()
+        value = str(p.get("value", "")).strip()
+        unit = p.get("unit") or ""
+        llm_ref = p.get("reference_range") or ""
+
+        rule_status, rule_ref = compare_to_range(name, value)
+        final_status = rule_status if rule_status != "unknown" else p.get("status", "unknown")
+        final_ref = llm_ref or rule_ref
+        final_expl = clinical_explanation(name, final_status, value, final_ref)
+
+        try:
+            status_enum = RangeStatus(final_status)
+        except Exception:
+            status_enum = RangeStatus.UNKNOWN
+
+        calibrated_parameters.append(
+            ReportParameter(
+                name=name,
+                value=value,
+                unit=unit,
+                reference_range=final_ref,
+                status=status_enum,
+                explanation=final_expl,
+            )
+        )
+
+    risk = summarize_risk(
+        [
+            {
+                "name": p.name,
+                "status": p.status.value,
+                "value": p.value,
+            }
+            for p in calibrated_parameters
+        ]
     )
 
-    return AnalysisResponse(parameters=parameters, risk_summary=risk_summary)
+    return AnalysisResponse(
+        parameters=calibrated_parameters,
+        risk_summary=RiskSummary(
+            level=risk["level"],
+            summary=risk["summary"],
+            recommendations=risk["recommendations"],
+        ),
+    )
 
 
 def answer_followup_question(question: str, report_context: str = "") -> str:
