@@ -1,28 +1,41 @@
 from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from services.ocr_engine import extract_text_from_file
 from services.llm_parser import parse_report_values, answer_followup_question
-from models.schemas import AnalysisResponse, ChatRequest, ChatResponse
+from models.schemas import ChatRequest, ChatResponse
 
 router = APIRouter()
 
 
-@router.post("/upload", response_model=AnalysisResponse)
+@router.post("/upload")
 async def upload_report(
     file: UploadFile = File(...),
     language: str = Form(default="english")
 ):
     try:
         file_bytes = await file.read()
-
         report_text = extract_text_from_file(file_bytes, file.content_type)
 
         if not report_text or len(report_text.strip()) < 20:
             raise HTTPException(status_code=400, detail="Could not extract text from file.")
 
-        result = parse_report_values(report_text)
+        parsed = parse_report_values(report_text)
 
-
-        return result
+        return {
+            "results": [
+                {
+                    "test": p.name,
+                    "value": p.value,
+                    "unit": p.unit,
+                    "status": p.status.value if hasattr(p.status, "value") else str(p.status),
+                    "reference": p.reference_range,
+                    "explanation": p.explanation,
+                }
+                for p in parsed.parameters
+            ],
+            "summary": parsed.risk_summary.summary,
+            "see_doctor_urgently": parsed.risk_summary.level.lower() == "high",
+            "disclaimer": parsed.disclaimer,
+        }
 
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -33,14 +46,11 @@ async def upload_report(
 @router.post("/chat", response_model=ChatResponse)
 async def chat(request: ChatRequest):
     try:
-      
         answer = answer_followup_question(
             request.question,
             request.report_context
         )
-
         return {"answer": answer}
-
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
 

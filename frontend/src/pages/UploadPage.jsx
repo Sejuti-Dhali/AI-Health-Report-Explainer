@@ -20,7 +20,7 @@ export default function UploadPage() {
 
     try {
   const res = await axios.post(
-    "http://localhost:8000/api/analyze",
+    "http://localhost:8000/api/upload",
     formData,
     {
       headers: {

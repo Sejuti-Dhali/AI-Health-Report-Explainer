@@ -1,6 +1,6 @@
 import json
 import os
-import anthropic
+from groq import Groq
 
 from models.schemas import AnalysisResponse, ReportParameter, RiskSummary, RangeStatus
 from prompts.prompts import (
@@ -9,37 +9,60 @@ from prompts.prompts import (
     TRANSLATE_BANGLA_PROMPT,
 )
 
-client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY"))
-MODEL = "claude-opus-4-5"
+MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
+
+
+def _get_client():
+    api_key = os.environ.get("GROQ_API_KEY")
+    if not api_key:
+        raise ValueError("GROQ_API_KEY is missing. Add it to backend/.env and restart the server.")
+    return Groq(api_key=api_key)
+
+
+def _call_llm(user_prompt: str, system_prompt: str = None, max_tokens: int = 2048) -> str:
+    client = _get_client()
+
+    messages = []
+    if system_prompt:
+        messages.append({"role": "system", "content": system_prompt})
+    messages.append({"role": "user", "content": user_prompt})
+
+    response = client.chat.completions.create(
+        model=MODEL,
+        messages=messages,
+        temperature=0,
+        max_tokens=max_tokens,
+    )
+    return response.choices[0].message.content or ""
 
 
 def parse_report_values(raw_text: str) -> AnalysisResponse:
-    """
-    Send OCR text to Claude → get structured JSON → return AnalysisResponse.
-    """
     prompt = PARSE_REPORT_PROMPT.format(raw_text=raw_text)
+    response_text = _call_llm(prompt, max_tokens=2048)
 
-    message = client.messages.create(
-        model=MODEL,
-        max_tokens=2048,
-        messages=[{"role": "user", "content": prompt}],
-    )
-
-    response_text = message.content[0].text
-
-    # Strip markdown fences if present
     clean = response_text.strip()
-    if clean.startswith("```"):
-        clean = clean.split("```")[1]
-        if clean.startswith("json"):
-            clean = clean[4:]
-    clean = clean.strip().rstrip("```").strip()
+
+    # Extract fenced JSON block if present
+    if "```" in clean:
+        parts = clean.split("```")
+        for part in parts:
+            if "{" in part and "}" in part:
+                clean = part
+                break
+
+    # Remove optional leading 'json'
+    clean = clean.replace("json", "").strip()
+
+    # Extract the outermost JSON object
+    start = clean.find("{")
+    end = clean.rfind("}")
+    if start != -1 and end != -1 and end > start:
+        clean = clean[start:end + 1]
 
     try:
         data = json.loads(clean)
     except json.JSONDecodeError as e:
         print(f"[LLM] JSON parse error: {e}\nRaw: {response_text}")
-        # Return a safe fallback
         return AnalysisResponse(
             parameters=[],
             risk_summary=RiskSummary(
@@ -72,32 +95,13 @@ def parse_report_values(raw_text: str) -> AnalysisResponse:
 
 
 def answer_followup_question(question: str, report_context: str = "") -> str:
-    """
-    Answer a user's follow-up question in plain language.
-    """
-    messages = []
+    composed = ""
     if report_context:
-        messages.append({"role": "user", "content": f"Report context:\n{report_context}"})
-        messages.append({"role": "assistant", "content": "Understood. I have the report context."})
-    messages.append({"role": "user", "content": question})
-
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=1024,
-        system=CHAT_SYSTEM_PROMPT,
-        messages=messages,
-    )
-    return response.content[0].text
+        composed += f"Report context:\n{report_context}\n\n"
+    composed += f"User question:\n{question}"
+    return _call_llm(composed, system_prompt=CHAT_SYSTEM_PROMPT, max_tokens=1024)
 
 
 def translate_to_bangla(text: str) -> str:
-    """
-    Translate the given text to Bangla using Claude.
-    """
     prompt = TRANSLATE_BANGLA_PROMPT.format(text=text)
-    response = client.messages.create(
-        model=MODEL,
-        max_tokens=2048,
-        messages=[{"role": "user", "content": prompt}],
-    )
-    return response.content[0].text
+    return _call_llm(prompt, max_tokens=2048)
