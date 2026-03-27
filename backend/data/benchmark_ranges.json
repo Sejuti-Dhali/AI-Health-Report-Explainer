@@ -1,0 +1,108 @@
+{
+  "hemoglobin": {
+    "kind": "reference_interval",
+    "units_supported": ["g/dL"],
+    "contexts": [
+      {
+        "sex": "male",
+        "age_group": "adult",
+        "low": 13.3,
+        "high": 16.9,
+        "source_id": "mayo_hgb",
+        "confidence": "high"
+      },
+      {
+        "sex": "female",
+        "age_group": "adult",
+        "low": 11.9,
+        "high": 15.1,
+        "source_id": "mayo_hgb",
+        "confidence": "high"
+      }
+    ]
+  },
+  "wbc": {
+    "kind": "reference_interval",
+    "units_supported": ["10^9/L", "x10^9/L", "/uL"],
+    "contexts": [
+      {
+        "sex": "general",
+        "age_group": "adult",
+        "low": 3.4,
+        "high": 9.6,
+        "source_id": "mayo_cbc",
+        "confidence": "high"
+      }
+    ]
+  },
+  "platelets": {
+    "kind": "reference_interval",
+    "units_supported": ["10^9/L", "x10^9/L", "/uL"],
+    "contexts": [
+      {
+        "sex": "general",
+        "age_group": "adult",
+        "low": 135,
+        "high": 317,
+        "source_id": "mayo_cbc",
+        "confidence": "high"
+      }
+    ]
+  },
+  "hba1c": {
+    "kind": "decision_threshold",
+    "units_supported": ["%"],
+    "thresholds": [
+      {
+        "label": "normal",
+        "operator": "<",
+        "value": 5.7,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      },
+      {
+        "label": "prediabetes",
+        "operator": "range",
+        "low": 5.7,
+        "high": 6.4,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      },
+      {
+        "label": "diabetes",
+        "operator": ">=",
+        "value": 6.5,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      }
+    ]
+  },
+  "glucose_fasting": {
+    "kind": "decision_threshold",
+    "units_supported": ["mg/dL"],
+    "thresholds": [
+      {
+        "label": "normal",
+        "operator": "<=",
+        "value": 99,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      },
+      {
+        "label": "prediabetes",
+        "operator": "range",
+        "low": 100,
+        "high": 125,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      },
+      {
+        "label": "diabetes",
+        "operator": ">=",
+        "value": 126,
+        "source_id": "cdc_diabetes_testing",
+        "confidence": "high"
+      }
+    ]
+  }
+}
