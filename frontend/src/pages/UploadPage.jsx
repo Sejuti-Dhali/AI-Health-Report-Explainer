@@ -1,6 +1,6 @@
 import { useState } from "react"
-import axios from "axios"
 import { useNavigate } from "react-router-dom"
+import { uploadReport } from "../utils/api"
 
 export default function UploadPage() {
   const [file, setFile] = useState(null)
@@ -19,47 +19,35 @@ export default function UploadPage() {
     formData.append("language", "english")
 
     try {
-      const res = await axios.post(
-        "http://localhost:8000/api/upload",
-        formData,
-        {
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
-        }
-      )
-
+      const data = await uploadReport(formData)
       navigate("/result", {
         state: {
-          data: res.data,
+          data,
           language: "english",
         },
       })
     } catch (err) {
-      const detail =
-        err?.response?.data?.detail ||
-        "Upload failed. PDF files usually work best."
-      setError(detail)
       console.error("FULL ERROR:", err.response?.data || err)
+      setError("Upload failed. Please check your file and try again.")
     } finally {
       setLoading(false)
     }
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-white flex items-center justify-center p-4">
-      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md">
+    <div className="min-h-screen bg-slate-100 dark:bg-slate-950 flex items-center justify-center p-4 transition-colors">
+      <div className="bg-white dark:bg-slate-900 rounded-2xl shadow-lg p-8 w-full max-w-md border border-gray-200 dark:border-slate-800">
         <div className="text-center mb-6">
-          <h1 className="text-2xl font-bold text-gray-900">MediScan AI</h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-white">MediScan AI</h1>
+          <p className="text-gray-500 dark:text-slate-400 text-sm mt-1">
             Upload your lab report for instant explanation
           </p>
-          <p className="text-gray-400 text-xs mt-2">
-            Best results with PDF reports
+          <p className="text-gray-400 dark:text-slate-500 text-xs mt-3">
+            Supports PDF and images (PNG, JPG, JPEG). Clean PDF reports give the best results.
           </p>
         </div>
 
-        <label className="block border-2 border-dashed border-gray-300 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors mb-4">
+        <label className="block border-2 border-dashed border-gray-300 dark:border-slate-700 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors mb-4">
           <input
             type="file"
             className="hidden"
@@ -70,13 +58,19 @@ export default function UploadPage() {
           {file ? (
             <div>
               <p className="text-green-600 font-medium">? {file.name}</p>
-              <p className="text-gray-400 text-xs mt-1">Click to change file</p>
+              <p className="text-gray-400 text-xs mt-1">
+                Click to change file
+              </p>
             </div>
           ) : (
             <div>
               <p className="text-4xl mb-2">??</p>
-              <p className="text-gray-600 text-sm">Click to upload PDF or image</p>
-              <p className="text-gray-400 text-xs mt-1">PDF, PNG, JPG supported</p>
+              <p className="text-gray-600 dark:text-slate-300 text-sm">
+                Click to upload PDF or image
+              </p>
+              <p className="text-gray-400 dark:text-slate-500 text-xs mt-1">
+                PDF, PNG, JPG supported
+              </p>
             </div>
           )}
         </label>
@@ -91,7 +85,7 @@ export default function UploadPage() {
           {loading ? "Analyzing..." : "Analyze Report"}
         </button>
 
-        <p className="text-xs text-gray-400 text-center mt-4">
+        <p className="text-xs text-gray-400 dark:text-slate-500 text-center mt-4">
           This tool explains reports. It does not replace a doctor.
         </p>
       </div>

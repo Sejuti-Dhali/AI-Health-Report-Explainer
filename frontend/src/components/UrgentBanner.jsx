@@ -1,30 +1,24 @@
-export default function UrgentBanner({ show, riskLevel }) {
-  if (!show && !riskLevel) return null
+import React from "react";
 
-  const level = (riskLevel || "").toLowerCase()
-
-  const styles =
-    level === "high"
-      ? "bg-red-50 border-red-200 text-red-800"
-      : level === "moderate"
-      ? "bg-amber-50 border-amber-200 text-amber-800"
-      : "bg-blue-50 border-blue-200 text-blue-800"
-
-  const title =
-    level === "high"
-      ? "Higher-risk result summary"
-      : level === "moderate"
-      ? "Moderate-risk result summary"
-      : "Result summary"
+export default function UrgentBanner({ show }) {
+  if (!show) return null;
 
   return (
-    <div className={`border rounded-3xl p-5 mb-5 shadow-sm ${styles}`}>
-      <div className="font-semibold mb-1 text-base">{title}</div>
-      <div className="text-sm leading-6">
-        {show
-          ? "Medical review is recommended, especially if symptoms are present."
-          : "No urgent flag was triggered by the current benchmarked interpretation."}
+    <div className="mb-8 rounded-3xl border border-red-200 bg-red-50 p-6 shadow-sm">
+      <div className="flex items-start gap-4">
+        <div className="mt-1 text-2xl">⚠️</div>
+        <div>
+          <h2 className="text-2xl font-semibold text-red-700">
+            Higher-risk result summary
+          </h2>
+          <p className="mt-2 text-base leading-7 text-red-700">
+            Medical review is recommended, especially if symptoms are present.
+          </p>
+          <p className="mt-2 text-sm text-red-600">
+            This is not a diagnosis. A qualified clinician should confirm the result.
+          </p>
+        </div>
       </div>
     </div>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-from pydantic import BaseModel, Field
-from typing import List, Optional
 from enum import Enum
+from typing import List, Optional
+from pydantic import BaseModel, Field
 
 
 class RangeStatus(str, Enum):
@@ -17,6 +17,7 @@ class ReportParameter(BaseModel):
     reference_range: Optional[str] = Field(None, description="Normal range, e.g. '12–17 g/dL'")
     status: RangeStatus = Field(..., description="high | low | normal | unknown")
     explanation: Optional[str] = Field(None, description="Simple plain-language explanation")
+    source: Optional[str] = Field(None, description="Reference source or benchmark provenance")  # ✅ IMPORTANT
 
 
 class RiskSummary(BaseModel):
