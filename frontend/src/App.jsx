@@ -1,6 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom"
-import UploadPage from "./pages/UploadPage.jsx"
-import ResultPage from "./pages/ResultPage.jsx"
+import UploadPage from "./pages/UploadPage"
+import ResultPage from "./pages/ResultPage"
 
 export default function App() {
   return (

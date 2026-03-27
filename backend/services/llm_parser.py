@@ -8,11 +8,7 @@ from prompts.prompts import (
     CHAT_SYSTEM_PROMPT,
     TRANSLATE_BANGLA_PROMPT,
 )
-from services.risk_engine import (
-    compare_to_range,
-    clinical_explanation,
-    summarize_risk,
-)
+from services.risk_engine import evaluate_test, clinical_explanation, summarize_risk
 
 MODEL = os.environ.get("GROQ_MODEL", "llama-3.3-70b-versatile")
 
@@ -61,6 +57,58 @@ def _extract_json_text(response_text: str) -> str:
     return clean
 
 
+def _should_keep_parameter(name: str, value: str, unit: str, reference_range: str) -> bool:
+    name_lower = (name or "").strip().lower()
+    value = (value or "").strip()
+    unit = (unit or "").strip()
+    reference_range = (reference_range or "").strip()
+
+    non_lab_fields = [
+        "age",
+        "gender",
+        "sex",
+        "patient name",
+        "name",
+        "id",
+        "patient id",
+        "date",
+        "date of birth",
+        "dob",
+        "address",
+        "phone",
+        "mobile",
+    ]
+
+    condition_terms = [
+        "dementia",
+        "stroke",
+        "diabetes mellitus",
+        "hypertension",
+        "cancer",
+        "diagnosis",
+        "impression",
+        "history",
+        "complaint",
+        "finding",
+        "present",
+    ]
+
+    if not name_lower:
+        return False
+
+    if any(field == name_lower for field in non_lab_fields):
+        return False
+
+    if any(term == name_lower for term in condition_terms):
+        return False
+
+    # keep only if some measurable/reportable structure exists
+    if value or unit or reference_range:
+        return True
+
+    return False
+
+
 def parse_report_values(raw_text: str) -> AnalysisResponse:
     prompt = PARSE_REPORT_PROMPT.format(raw_text=raw_text[:12000])
     response_text = _call_llm(prompt, max_tokens=2048)
@@ -76,7 +124,7 @@ def parse_report_values(raw_text: str) -> AnalysisResponse:
                 summary="The report text could not be parsed reliably. Please upload a clearer PDF or review the original report manually.",
                 recommendations=[
                     "Try uploading a text-based PDF.",
-                    "Review the original report with a clinician if findings are important.",
+                    "Review the original report with a clinician if findings are important."
                 ],
             ),
         )
@@ -86,13 +134,22 @@ def parse_report_values(raw_text: str) -> AnalysisResponse:
     for p in data.get("parameters", []):
         name = p.get("name", "").strip()
         value = str(p.get("value", "")).strip()
-        unit = p.get("unit") or ""
-        llm_ref = p.get("reference_range") or ""
+        unit = (p.get("unit") or "").strip()
+        report_reference = (p.get("reference_range") or "").strip()
 
-        rule_status, rule_ref = compare_to_range(name, value)
-        final_status = rule_status if rule_status != "unknown" else p.get("status", "unknown")
-        final_ref = llm_ref or rule_ref
-        final_expl = clinical_explanation(name, final_status, value, final_ref)
+        if not _should_keep_parameter(name, value, unit, report_reference):
+            continue
+
+        benchmark = evaluate_test(name, value, unit=unit, sex="general", age_group="adult")
+
+        final_status = benchmark["status"]
+        final_reference = benchmark["reference"] or report_reference
+        final_explanation = clinical_explanation(
+            name,
+            final_status,
+            final_reference,
+            benchmark["interpretation_mode"],
+        )
 
         try:
             status_enum = RangeStatus(final_status)
@@ -104,9 +161,9 @@ def parse_report_values(raw_text: str) -> AnalysisResponse:
                 name=name,
                 value=value,
                 unit=unit,
-                reference_range=final_ref,
+                reference_range=final_reference,
                 status=status_enum,
-                explanation=final_expl,
+                explanation=final_explanation,
             )
         )
 
