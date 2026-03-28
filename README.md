@@ -1,402 +1,247 @@
-# AI-Health-Report-Explainer
+# 🧠 MediScan AI  
+**AI Health Report Explainer**
 
-\# MediScan AI
+MediScan AI is an AI-powered tool that helps users understand medical reports by extracting key parameters, identifying abnormal values, and providing clear explanations.
 
+It supports both PDF and image-based lab reports and presents insights through an intuitive interface with benchmark-guided interpretation.
 
+---
 
-MediScan AI is an AI-powered health report explainer that helps users upload medical reports, extract key parameters, understand abnormal findings, and ask follow-up questions in natural language.
+## ✨ Features
 
+- 📄 Upload medical reports:
+  - PDF  
+  - PNG  
+  - JPG / JPEG  
 
+- 🔍 OCR-based text extraction  
+- 🤖 AI-assisted parameter parsing  
+- 📊 Benchmark-guided interpretation using lab reference ranges  
 
-It supports PDF and image-based lab reports and presents results through a clean, interactive interface with benchmark-guided interpretation.
+### 📂 Categorized Results
+- 🚨 Needs Attention  
+- ✅ Within Expected Range  
+- ⚠️ Uncertain / Not Interpretable  
 
+- 💬 Follow-up chat for report-related queries  
+- 🌗 Dark / Light mode  
+- 📱 Clean and responsive UI  
 
+---
 
-\---
+## 🛠 Tech Stack
 
+### Frontend
+- React  
+- Vite  
+- Tailwind CSS  
 
+### Backend
+- FastAPI  
+- Pydantic  
+- Python  
 
-\## Features
+### AI / OCR
+- Groq LLM  
+- PDF & Image text extraction  
+- Rule-based + AI hybrid interpretation  
 
+---
 
+## 📁 Project Structure
 
-\- Upload medical reports in:
-
-&#x20; - PDF
-
-&#x20; - PNG
-
-&#x20; - JPG / JPEG
-
-\- OCR-based text extraction
-
-\- AI-assisted parameter parsing
-
-\- Benchmark-guided interpretation using standard lab reference intervals
-
-\- Categorized result view:
-
-&#x20; - Needs attention
-
-&#x20; - Within expected range
-
-&#x20; - Could not be confidently interpreted
-
-\- Follow-up chat about the uploaded report
-
-\- Dark / Light mode
-
-\- Clean and responsive UI
-
-
-
-\---
-
-
-
-\## Tech Stack
-
-
-
-\### Frontend
-
-\- React
-
-\- Vite
-
-\- Tailwind CSS
-
-
-
-\### Backend
-
-\- FastAPI
-
-\- Pydantic
-
-\- Python
-
-
-
-\### AI / OCR
-
-\- Groq LLM
-
-\- PDF / image text extraction pipeline
-
-\- Rule-assisted interpretation and fallback reference mapping
-
-
-
-\---
-
-
-
-\## Project Structure
-
-
-
-```text
-
+```
 AI-Health-Report-Explainer/
 
-│
-
 ├── backend/
-
 │   ├── api/
-
-│   │   └── routes.py
-
 │   ├── models/
-
-│   │   └── schemas.py
-
 │   ├── prompts/
-
-│   │   ├── prompts.py
-
-│   │   └── reference\_ranges.py
-
 │   ├── services/
-
-│   │   ├── llm\_parser.py
-
-│   │   ├── ocr\_engine.py
-
-│   │   └── reference\_ranges.py
-
 │   ├── main.py
-
 │   └── requirements.txt
 
-│
-
 ├── frontend/
-
 │   ├── src/
-
 │   │   ├── components/
-
-│   │   │   ├── ChatBox.jsx
-
-│   │   │   ├── ResultCard.jsx
-
-│   │   │   └── UrgentBanner.jsx
-
 │   │   ├── pages/
-
-│   │   │   ├── UploadPage.jsx
-
-│   │   │   └── ResultPage.jsx
-
 │   │   ├── utils/
-
-│   │   │   └── api.js
-
 │   │   ├── App.jsx
-
 │   │   └── main.jsx
-
 │   ├── package.json
-
 │   └── tailwind.config.js
 
-│
-
 └── README.md
+```
 
-How It Works
+---
 
-The user uploads a report file.
+## ⚙️ How It Works
 
-The backend extracts report text from the PDF or image.
+1. Upload a report (PDF/image)  
+2. Backend extracts text using OCR  
+3. LLM parses medical parameters into structured data  
+4. Values are evaluated using reference ranges  
+5. Results are displayed with:
+   - Summary  
+   - Categorized cards  
+   - Urgent flags  
 
-The LLM parses key medical parameters into structured JSON.
+6. Ask follow-up questions via chat  
 
-The system evaluates available values using benchmark-guided logic and standard lab reference intervals.
+---
 
-The frontend displays:
+## 📄 Supported File Types
 
-summary
+- PDF  
+- PNG  
+- JPG / JPEG  
 
-grouped result cards
+> ✅ Clean PDFs give best results  
+> ⚠️ OCR quality affects image accuracy  
 
-urgent flag when needed
+---
 
-The user can ask follow-up questions through the chat box.
+## 🚀 Setup Instructions
 
-Supported File Types
+### 1. Clone the Repository
 
-PDF
-
-PNG
-
-JPG
-
-JPEG
-
-
-
-Clean PDF reports usually produce the best results.
-
-Image-based reports are supported, but OCR quality may affect extraction accuracy.
-
-
-
-Setup Instructions
-
-1\. Clone the repository
-
+```bash
 git clone https://github.com/s0r0j/AI-Health-Report-Explainer.git
-
 cd AI-Health-Report-Explainer
+```
 
-2\. Backend setup
+---
 
+### 2. Backend Setup
+
+```bash
 cd backend
-
 python -m venv .venv
+```
 
-Activate virtual environment on Windows
+#### Activate Virtual Environment
 
-.venv\\Scripts\\activate
+**Windows**
+```bash
+.venv\Scripts\activate
+```
 
-Install dependencies
+#### Install Dependencies
 
+```bash
 pip install -r requirements.txt
+```
 
-Create .env
+#### Create `.env`
 
+```
+GROQ_API_KEY=your_groq_api_key_here
+GROQ_MODEL=llama-3.3-70b-versatile
+```
 
+#### Run Backend
 
-Create a file named .env inside backend/ and add:
-
-
-
-GROQ\_API\_KEY=your\_groq\_api\_key\_here
-
-GROQ\_MODEL=llama-3.3-70b-versatile
-
-Run backend
-
+```bash
 uvicorn main:app --reload --port 8000
+```
 
+👉 Backend: http://localhost:8000
 
+---
 
-Backend runs at:
+### 3. Frontend Setup
 
-
-
-http://localhost:8000
-
-3\. Frontend setup
-
-
-
-Open a new terminal:
-
-
-
+```bash
 cd frontend
-
 npm install
-
 npm run dev
+```
 
+👉 Frontend: http://localhost:5173
 
+---
 
-Frontend runs at:
+## 🔌 API Endpoints
 
+### Upload Report
 
-
-http://localhost:5173
-
-API Endpoints
-
-Upload report
-
+```
 POST /api/upload
+```
 
+**Form Data**
+- `file`
+- `language`
 
+---
 
-Form data:
+### Chat
 
-
-
-file
-
-language
-
-Ask follow-up question
-
+```
 POST /api/chat
+```
 
-
-
-JSON body:
-
-
-
+**Request Body**
+```json
 {
-
-&#x20; "question": "What does low hemoglobin mean?",
-
-&#x20; "report\_context": "Hemoglobin: 10.2 g/dL (low)"
-
+  "question": "What does low hemoglobin mean?",
+  "report_context": "Hemoglobin: 10.2 g/dL (low)"
 }
+```
 
-UI Highlights
+---
 
-Result dashboard with grouped sections
+## 🧪 Interpretation System
 
-Parameter cards with:
+- Uses standard lab reference ranges  
+- Hybrid approach:
+  - Rule-based validation  
+  - LLM-based explanation  
 
-test name
+> ⚠️ Not a diagnostic system  
 
-value
+---
 
-reference
+## ⚠️ Disclaimer
 
-interpretation
+This tool is for **informational purposes only**.
 
-reference basis
+- ❌ Not a medical diagnosis tool  
+- ❌ Not a replacement for doctors  
 
-Benchmark-guided tags
+👉 Always consult a healthcare professional.
 
-Follow-up chat section
+---
 
-Theme toggle for dark/light mode
+## 🚧 Limitations
 
-Benchmark-Guided Interpretation
+- OCR depends on input quality  
+- Some values may be uncertain  
+- Reference ranges vary by lab  
+- Images are less reliable than PDFs  
 
+---
 
+## 🔮 Future Improvements
 
-The system uses benchmark-guided interpretation based on standard lab reference intervals and fallback rule-based logic where applicable.
+- Better OCR preprocessing  
+- Confidence scoring  
+- Expanded medical references  
+- Exportable summaries  
+- Improved multi-language support  
 
+---
 
+## 👥 Contributors
 
-Exact source labels are shown only where available.
+**Team MediScan AI**
 
-Interpretations should be considered assistive, not definitive.
+---
 
+## 🎯 Demo Tips
 
-
-Disclaimer
-
-
-
-This tool provides AI-generated explanations for informational purposes only.
-
-It does not replace a doctor, a diagnostic workflow, or a certified medical report review.
-
-
-
-Always consult a qualified healthcare professional before making any medical decision.
-
-
-
-Current Limitations
-
-OCR quality affects extraction quality
-
-Some values may remain uncertain if the report text is incomplete or ambiguous
-
-Reference intervals can vary by lab, demographics, and clinical context
-
-Image-based reports may be less reliable than clean PDFs
-
-Future Improvements
-
-Stronger benchmark provenance per parameter
-
-Better image preprocessing for OCR
-
-Expanded clinical reference mapping
-
-Confidence scoring
-
-Exportable patient-friendly summary
-
-Multi-language support improvements
-
-Contributors
-
-Team MediScan AI
-
-Demo Notes
-
-
-
-For the best demo experience:
-
-
-
-use a clean PDF report
-
-show grouped result cards
-
-ask a follow-up question in chat
-
-toggle dark/light mode
-
+- Use a clean PDF  
+- Show categorized results  
+- Ask follow-up questions  
+- Toggle dark/light mode
