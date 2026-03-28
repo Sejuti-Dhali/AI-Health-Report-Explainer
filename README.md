@@ -7,6 +7,63 @@ It supports both PDF and image-based lab reports and presents insights through a
 
 ---
 
+## 📸 Screenshots
+
+### 🏠 Upload Interface
+<p align="center">
+  <img src="./assets/upload-screen.png" width="800"/>
+</p>
+
+<p align="center">
+  <b>Upload medical reports (PDF/Image) with a clean and intuitive interface</b>
+</p>
+
+---
+
+### 📊 Analysis Overview
+<p align="center">
+  <img src="./assets/analysis-overview.png" width="800"/>
+</p>
+
+<p align="center">
+  <b>AI-generated summary with risk interpretation and categorized insights</b>
+</p>
+
+---
+
+### 🚨 Abnormal Results Detection
+<p align="center">
+  <img src="./assets/abnormal-results.png" width="800"/>
+</p>
+
+<p align="center">
+  <b>Clearly highlighted abnormal values that need medical attention</b>
+</p>
+
+---
+
+### ✅ Normal Results
+<p align="center">
+  <img src="./assets/normal-results.png" width="800"/>
+</p>
+
+<p align="center">
+  <b>Values within expected range with benchmark-based explanations</b>
+</p>
+
+---
+
+### 💬 Chat Assistant
+<p align="center">
+  <img src="./assets/chat-assistant.png" width="800"/>
+</p>
+
+<p align="center">
+  <b>Ask follow-up questions and get contextual explanations</b>
+</p>
+
+---
+
 ## ✨ Features
 
 - 📄 Upload medical reports:
