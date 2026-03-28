@@ -15,12 +15,16 @@ export default function App() {
   }, [dark])
 
   return (
-    <>
+    <div className="transition-colors duration-300">
+      {/* Toggle */}
       <button
         onClick={() => setDark(!dark)}
-        className="fixed top-4 right-4 z-50 px-4 py-2 rounded-xl bg-slate-800 text-white dark:bg-yellow-400 dark:text-slate-900 shadow"
+        className="fixed top-4 right-4 z-50 px-4 py-2 rounded-full 
+        bg-white/80 dark:bg-slate-800/80 backdrop-blur 
+        text-slate-800 dark:text-white 
+        shadow-md hover:scale-105 active:scale-95 transition"
       >
-        {dark ? "☀️ Light" : "🌙 Dark"}
+        {dark ? "☀️" : "🌙"}
       </button>
 
       <BrowserRouter>
@@ -29,6 +33,6 @@ export default function App() {
           <Route path="/result" element={<ResultPage />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </div>
   )
 }
