@@ -112,6 +112,10 @@ export default function UploadPage() {
             {loading ? "Analyzing..." : "Analyze Report"}
           </button>
 
+          <p className="text-xs text-amber-700 dark:text-amber-300 text-center mt-4">
+            On free hosting, the first analysis after inactivity can take 30-60 seconds while the backend wakes up.
+          </p>
+
           {/* Footer */}
           <p className="text-xs text-slate-400 text-center mt-5">
             This tool assists interpretation — not a medical diagnosis.
