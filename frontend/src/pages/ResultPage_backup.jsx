@@ -3,6 +3,8 @@ import { useLocation, useNavigate } from "react-router-dom"
 import ResultCard from "../components/ResultCard"
 import UrgentBanner from "../components/UrgentBanner"
 
+const EMPTY_RESULTS = []
+
 function confidenceScore(confidence) {
   const c = (confidence || "").toLowerCase()
   if (c === "high") return 2
@@ -38,28 +40,8 @@ export default function ResultPage() {
   const navigate = useNavigate()
   const [showUnknown, setShowUnknown] = useState(false)
 
-  const data = location.state?.data
-
-  if (!data) {
-    return (
-      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 max-w-lg w-full text-center">
-          <h1 className="text-2xl font-bold text-gray-900 mb-3">No result found</h1>
-          <p className="text-gray-600 mb-6">
-            No analysis data was found for this page. Please upload a report again.
-          </p>
-          <button
-            onClick={() => navigate("/")}
-            className="bg-slate-900 text-white px-5 py-3 rounded-2xl hover:bg-black"
-          >
-            Go back
-          </button>
-        </div>
-      </div>
-    )
-  }
-
-  const results = data.results || []
+  const data = location.state?.data ?? null
+  const results = data?.results ?? EMPTY_RESULTS
 
   const abnormal = useMemo(
     () =>
@@ -84,6 +66,25 @@ export default function ResultPage() {
       ),
     [results]
   )
+
+  if (!data) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex items-center justify-center p-4">
+        <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8 max-w-lg w-full text-center">
+          <h1 className="text-2xl font-bold text-gray-900 mb-3">No result found</h1>
+          <p className="text-gray-600 mb-6">
+            No analysis data was found for this page. Please upload a report again.
+          </p>
+          <button
+            onClick={() => navigate("/")}
+            className="bg-slate-900 text-white px-5 py-3 rounded-2xl hover:bg-black"
+          >
+            Go back
+          </button>
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 p-4 md:p-6">

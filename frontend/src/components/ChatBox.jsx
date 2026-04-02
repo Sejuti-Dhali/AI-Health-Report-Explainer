@@ -15,7 +15,8 @@ export default function ChatBox({ reportContext, language }) {
     setLoading(true)
 
     try {
-      const res = await axios.post("http://localhost:8000/api/chat", {
+      const apiUrl = import.meta.env.VITE_API_URL || "http://localhost:8000/api"
+      const res = await axios.post(`${apiUrl}/chat`, {
         question,
         report_context: reportContext,
         language
