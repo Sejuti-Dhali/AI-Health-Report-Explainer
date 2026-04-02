@@ -79,6 +79,7 @@ def _ocr_pdf_pages(file_bytes: bytes) -> str:
 
 def _configure_tesseract():
     import pytesseract
+    import shutil
 
     candidates = [
         os.getenv("TESSERACT_CMD"),
@@ -91,6 +92,12 @@ def _configure_tesseract():
             pytesseract.pytesseract.tesseract_cmd = path
             print(f"[OCR] Using Tesseract: {path}")
             return
+
+    system_tesseract = shutil.which("tesseract")
+    if system_tesseract:
+        pytesseract.pytesseract.tesseract_cmd = system_tesseract
+        print(f"[OCR] Using Tesseract from PATH: {system_tesseract}")
+        return
 
     print("[OCR] Warning: Tesseract executable path not found automatically.")
 

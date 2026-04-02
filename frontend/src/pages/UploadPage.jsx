@@ -28,7 +28,16 @@ export default function UploadPage() {
       })
     } catch (err) {
       console.error("FULL ERROR:", err.response?.data || err)
-      setError("Upload failed. Please check your file and try again.")
+      const status = err.response?.status
+      const detail = err.response?.data?.detail
+
+      if (detail) {
+        setError(detail)
+      } else if (status === 502 || status === 503 || status === 504) {
+        setError("The backend is waking up or temporarily unavailable. Please wait a moment and try again.")
+      } else {
+        setError("Upload failed. Please check your file and try again.")
+      }
     } finally {
       setLoading(false)
     }
