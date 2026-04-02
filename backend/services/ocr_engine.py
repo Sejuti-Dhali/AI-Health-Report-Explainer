@@ -35,10 +35,45 @@ def _extract_from_pdf(file_bytes: bytes) -> str:
 
         combined = "\n".join(text_parts)
         print(f"[OCR][PDF] total_chars={len(combined)}")
-        return combined
+        if len(combined.strip()) >= 20:
+            return combined
+
+        print("[OCR][PDF] Falling back to OCR for scanned PDF pages.")
+        return _ocr_pdf_pages(file_bytes)
 
     except Exception as e:
         print(f"[OCR] PDF extraction error: {e}")
+        return _ocr_pdf_pages(file_bytes)
+
+
+def _ocr_pdf_pages(file_bytes: bytes) -> str:
+    try:
+        import fitz
+        from PIL import Image
+        import pytesseract
+
+        _configure_tesseract()
+
+        text_parts = []
+        with fitz.open(stream=file_bytes, filetype="pdf") as pdf:
+            for i, page in enumerate(pdf):
+                pix = page.get_pixmap(dpi=200, alpha=False)
+                image = Image.frombytes("RGB", (pix.width, pix.height), pix.samples)
+                processed = _preprocess_for_ocr(image)
+                page_text = pytesseract.image_to_string(
+                    processed,
+                    config="--oem 3 --psm 6"
+                )
+                print(f"[OCR][PDF-OCR] page={i+1}, chars={len(page_text)}")
+                if page_text:
+                    text_parts.append(page_text)
+
+        combined = "\n".join(text_parts)
+        print(f"[OCR][PDF-OCR] total_chars={len(combined)}")
+        return combined
+
+    except Exception as e:
+        print(f"[OCR] PDF OCR fallback error: {e}")
         return ""
 
 

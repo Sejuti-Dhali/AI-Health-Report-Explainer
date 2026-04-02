@@ -17,7 +17,10 @@ async def upload_report(
         report_text = extract_text_from_file(file_bytes, file.content_type)
 
         if not report_text or len(report_text.strip()) < 20:
-            raise HTTPException(status_code=400, detail="Could not extract text from file.")
+            raise HTTPException(
+                status_code=400,
+                detail="Could not extract enough text from this file. For scanned PDFs or unclear images, try a clearer file."
+            )
 
         parsed = parse_report_values(report_text)
 
@@ -47,6 +50,8 @@ async def upload_report(
             "disclaimer": parsed.disclaimer,
         }
 
+    except HTTPException:
+        raise
     except ValueError as e:
         raise HTTPException(status_code=400, detail=str(e))
     except Exception as e:
