@@ -1,7 +1,8 @@
-from fastapi import APIRouter, UploadFile, File, Form, HTTPException
+﻿from fastapi import APIRouter, UploadFile, File, Form, HTTPException
 from services.ocr_engine import extract_text_from_file
-from services.llm_parser import parse_report_values, answer_followup_question
-from services.risk_engine import evaluate_test
+from services.local_cbc_parser import parse_local_cbc_report
+from services.personalization.apply import attach_personalization
+from services.llm_parser import answer_followup_question
 from models.schemas import ChatRequest, ChatResponse
 
 router = APIRouter()
@@ -10,7 +11,11 @@ router = APIRouter()
 @router.post("/upload")
 async def upload_report(
     file: UploadFile = File(...),
-    language: str = Form(default="english")
+    language: str = Form(default="english"),
+    age: int = Form(default=45),
+    sex: str = Form(default="female"),
+    bmi: float = Form(default=24.5),
+    condition: str = Form(default="none")
 ):
     try:
         file_bytes = await file.read()
@@ -22,32 +27,27 @@ async def upload_report(
                 detail="Could not extract enough text from this file. For scanned PDFs or unclear images, try a clearer file."
             )
 
-        parsed = parse_report_values(report_text)
+        parsed = parse_local_cbc_report(report_text, sex=sex)
 
-        enriched_results = []
-        for p in parsed.parameters:
-            benchmark = evaluate_test(p.name, p.value, sex="general", age_group="adult")
-            enriched_results.append(
-                {
-                    "test": p.name,
-                    "value": p.value,
-                    "unit": p.unit,
-                    "status": p.status.value if hasattr(p.status, "value") else str(p.status),
-                    "reference": p.reference_range,
-                    "explanation": p.explanation,
-                    "source_label": benchmark.get("source_label"),
-                    "source_type": benchmark.get("source_type"),
-                    "confidence": benchmark.get("confidence"),
-                    "interpretation_mode": benchmark.get("interpretation_mode"),
-                }
-            )
+        patient_ctx = {
+            "age": age,
+            "sex": sex,
+            "bmi": bmi,
+            "condition": condition,
+        }
+
+        final_results = []
+        for item in parsed["results"]:
+            final_results.append(attach_personalization(item, patient_ctx))
 
         return {
-            "results": enriched_results,
-            "summary": parsed.risk_summary.summary,
-            "see_doctor_urgently": parsed.risk_summary.level.lower() == "high",
-            "risk_level": parsed.risk_summary.level,
-            "disclaimer": parsed.disclaimer,
+            "results": final_results,
+            "summary": parsed["summary"],
+            "see_doctor_urgently": parsed["see_doctor_urgently"],
+            "risk_level": parsed["risk_level"],
+            "disclaimer": parsed["disclaimer"],
+            "analysis_mode": "local_cbc_parser_with_personalization",
+            "rag_enabled": False
         }
 
     except HTTPException:
@@ -59,17 +59,14 @@ async def upload_report(
 
 
 @router.post("/chat", response_model=ChatResponse)
-async def chat(request: ChatRequest):
+async def chat_followup(req: ChatRequest):
     try:
         answer = answer_followup_question(
-            request.question,
-            request.report_context
+            question=req.question,
+            report_context=req.report_context
         )
-        return {"answer": answer}
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Chat failed: {str(e)}")
-
-
-@router.get("/health")
-async def health():
-    return {"status": "ok"}
+        return ChatResponse(answer=answer)
+    except Exception:
+        return ChatResponse(
+            answer="Follow-up chat is temporarily unavailable. The upload analysis remains available in local parser mode."
+        )
