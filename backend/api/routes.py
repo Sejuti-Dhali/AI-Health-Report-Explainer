@@ -2,6 +2,7 @@
 from services.ocr_engine import extract_text_from_file
 from services.local_cbc_parser import parse_local_cbc_report
 from services.personalization.apply import attach_personalization
+from services.literacy.formatter import apply_literacy_controls
 from services.llm_parser import answer_followup_question
 from models.schemas import ChatRequest, ChatResponse
 
@@ -15,7 +16,8 @@ async def upload_report(
     age: int = Form(default=45),
     sex: str = Form(default="female"),
     bmi: float = Form(default=24.5),
-    condition: str = Form(default="none")
+    condition: str = Form(default="none"),
+    literacy_level: str = Form(default="layperson")
 ):
     try:
         file_bytes = await file.read()
@@ -38,7 +40,12 @@ async def upload_report(
 
         final_results = []
         for item in parsed["results"]:
-            final_results.append(attach_personalization(item, patient_ctx))
+            x = attach_personalization(item, patient_ctx)
+            x = apply_literacy_controls(
+                x,
+                literacy_level=literacy_level
+            )
+            final_results.append(x)
 
         return {
             "results": final_results,
@@ -46,8 +53,9 @@ async def upload_report(
             "see_doctor_urgently": parsed["see_doctor_urgently"],
             "risk_level": parsed["risk_level"],
             "disclaimer": parsed["disclaimer"],
-            "analysis_mode": "local_cbc_parser_with_personalization",
-            "rag_enabled": False
+            "analysis_mode": "local_cbc_parser_with_personalization_and_literacy_control",
+            "rag_enabled": False,
+            "literacy_level": literacy_level
         }
 
     except HTTPException:
