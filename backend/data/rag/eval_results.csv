@@ -1,0 +1,6 @@
+case_id,test,value,unit,reference,expected_status,predicted_status,confidence_score,confidence_band,vote_ratio,semantic_agreement,needs_manual_review,hallucination_flag,evidence_support,evidence_support_score
+1,Hemoglobin,12.5,g/dL,13.0 - 17.0 g/dL,low,unknown,1.0,high,1.0,1.0,True,True,False,0.311
+2,WBC COUNT,9000,cumm,4.5-11.0 thousand/uL,normal,unknown,1.0,high,1.0,1.0,True,True,False,0.257
+3,PLATELET COUNT,150000,cumm,150-400 thousand/uL,normal,unknown,1.0,high,1.0,1.0,True,True,False,0.257
+4,MCV,87.75,fL,83 - 101,normal,unknown,1.0,high,1.0,1.0,True,True,False,0.311
+5,MCHC,32.8,g/dL,32-36 g/dL,normal,unknown,1.0,high,1.0,1.0,True,True,False,0.311

@@ -53,7 +53,7 @@ async def upload_report(
             "see_doctor_urgently": parsed["see_doctor_urgently"],
             "risk_level": parsed["risk_level"],
             "disclaimer": parsed["disclaimer"],
-            "analysis_mode": "local_cbc_parser_with_personalization_and_literacy_control",
+            "analysis_mode": "extended_local_rule_engine_with_personalization_and_literacy_control",
             "rag_enabled": False,
             "literacy_level": literacy_level
         }

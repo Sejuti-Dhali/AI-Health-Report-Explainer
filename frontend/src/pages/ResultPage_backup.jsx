@@ -1,3 +1,8 @@
+import { normalizeResultForUi } from "../utils/ragUi";
+import WarningChip from "../components/WarningChip";
+import EvidenceList from "../components/EvidenceList";
+import ManualReviewBadge from "../components/ManualReviewBadge";
+import ConfidenceBadge from "../components/ConfidenceBadge";
 import { useMemo, useState } from "react"
 import { useLocation, useNavigate } from "react-router-dom"
 import ResultCard from "../components/ResultCard"
@@ -214,3 +219,27 @@ export default function ResultPage() {
     </div>
   )
 }
+
+
+{/* RAG_SAFETY_UI_BLOCK */}
+{/* Place this block inside each rendered test-result card and replace `item` with your row variable if needed */}
+{(() => {
+  const r = normalizeResultForUi(item);
+  return (
+    <div className="mt-3">
+      <div className="flex flex-wrap gap-2">
+        <ConfidenceBadge band={r.confidence_band} score={r.confidence_score} />
+        <ManualReviewBadge show={r.needs_manual_review} />
+        <WarningChip show={r.hallucination_flag || !r.evidence_support} text="Low evidence support" />
+      </div>
+
+      {(r.needs_manual_review || r.hallucination_flag || !r.evidence_support) ? (
+        <div className="mt-2 rounded-lg border border-amber-200 bg-amber-50 p-2 text-xs text-amber-800">
+          Interpretation uncertainty is elevated. Review with a clinician is recommended.
+        </div>
+      ) : null}
+
+      <EvidenceList evidence={r.retrieved_evidence || []} />
+    </div>
+  );
+})()}

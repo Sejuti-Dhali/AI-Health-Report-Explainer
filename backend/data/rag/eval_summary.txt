@@ -1,0 +1,7 @@
+total_cases: 5
+exact_match: 0
+exact_match_rate: 0.0
+abstentions: 5
+abstention_rate: 1.0
+hallucination_flags: 5
+manual_reviews: 5

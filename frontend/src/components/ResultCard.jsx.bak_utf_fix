@@ -87,7 +87,7 @@ export default function ResultCard({ result }) {
             Value
           </p>
           <p className="mt-1 text-lg font-semibold text-slate-900 dark:text-white">
-            {result?.value ?? "â€”"} {result?.unit || ""}
+            {result?.value ?? "—"} {result?.unit || ""}
           </p>
         </div>
 

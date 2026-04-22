@@ -1,0 +1,176 @@
+﻿items:
+  - id: hgb_male
+    test: Hemoglobin
+    aliases: ["Hb", "HGB", "Hemoglobin"]
+    sex: male
+    unit: g/dL
+    low: 13.0
+    high: 17.0
+    source_label: "CBC reference interval"
+    source_text: "Adult male hemoglobin reference interval is approximately 13.0 to 17.0 g/dL."
+    action_text: "Low hemoglobin may suggest anemia and should be clinically correlated with symptoms, iron status, and red cell indices."
+
+  - id: hgb_female
+    test: Hemoglobin
+    aliases: ["Hb", "HGB", "Hemoglobin"]
+    sex: female
+    unit: g/dL
+    low: 12.0
+    high: 15.0
+    source_label: "CBC reference interval"
+    source_text: "Adult female hemoglobin reference interval is approximately 12.0 to 15.0 g/dL."
+    action_text: "Low hemoglobin may suggest anemia and should be clinically correlated with symptoms, iron status, and red cell indices."
+
+  - id: rbc_male
+    test: RBC COUNT
+    aliases: ["RBC", "RBC COUNT", "Red Blood Cell Count"]
+    sex: male
+    unit: million/uL
+    low: 4.5
+    high: 5.9
+    source_label: "CBC reference interval"
+    source_text: "Typical adult male red blood cell count is about 4.5 to 5.9 million/uL."
+    action_text: "Abnormal RBC count should be interpreted with hemoglobin, hematocrit, hydration status, and clinical symptoms."
+
+  - id: rbc_female
+    test: RBC COUNT
+    aliases: ["RBC", "RBC COUNT", "Red Blood Cell Count"]
+    sex: female
+    unit: million/uL
+    low: 4.1
+    high: 5.1
+    source_label: "CBC reference interval"
+    source_text: "Typical adult female red blood cell count is about 4.1 to 5.1 million/uL."
+    action_text: "Abnormal RBC count should be interpreted with hemoglobin, hematocrit, hydration status, and clinical symptoms."
+
+  - id: pcv_male
+    test: Packed Cell Volume (PCV)
+    aliases: ["PCV", "Packed Cell Volume", "Hematocrit", "HCT"]
+    sex: male
+    unit: "%"
+    low: 40
+    high: 50
+    source_label: "CBC reference interval"
+    source_text: "Typical adult male packed cell volume is approximately 40 to 50 percent."
+    action_text: "Packed cell volume should be interpreted with hemoglobin, RBC count, and hydration status."
+
+  - id: pcv_female
+    test: Packed Cell Volume (PCV)
+    aliases: ["PCV", "Packed Cell Volume", "Hematocrit", "HCT"]
+    sex: female
+    unit: "%"
+    low: 36
+    high: 46
+    source_label: "CBC reference interval"
+    source_text: "Typical adult female packed cell volume is approximately 36 to 46 percent."
+    action_text: "Packed cell volume should be interpreted with hemoglobin, RBC count, and hydration status."
+
+  - id: mcv
+    test: Mean Corpuscular Volume (MCV)
+    aliases: ["MCV", "Mean Corpuscular Volume"]
+    unit: fL
+    low: 80
+    high: 100
+    source_label: "CBC reference interval"
+    source_text: "Typical adult mean corpuscular volume is approximately 80 to 100 fL."
+    action_text: "MCV helps classify anemia patterns and should be interpreted with MCH, MCHC, and RDW."
+
+  - id: mch
+    test: MCH
+    aliases: ["MCH", "Mean Corpuscular Hemoglobin"]
+    unit: pg
+    low: 27
+    high: 33
+    source_label: "CBC reference interval"
+    source_text: "Typical adult mean corpuscular hemoglobin is approximately 27 to 33 pg."
+    action_text: "MCH should be interpreted with MCV and MCHC when assessing red cell morphology."
+
+  - id: mchc
+    test: MCHC
+    aliases: ["MCHC", "Mean Corpuscular Hemoglobin Concentration"]
+    unit: g/dL
+    low: 32
+    high: 36
+    source_label: "CBC reference interval"
+    source_text: "Typical adult mean corpuscular hemoglobin concentration is approximately 32 to 36 g/dL."
+    action_text: "MCHC should be interpreted alongside MCV and clinical context."
+
+  - id: rdw
+    test: RDW
+    aliases: ["RDW", "Red Cell Distribution Width"]
+    unit: "%"
+    low: 11.5
+    high: 14.5
+    source_label: "CBC reference interval"
+    source_text: "Typical adult red cell distribution width is approximately 11.5 to 14.5 percent."
+    action_text: "RDW helps assess variability in red cell size and is often interpreted with MCV."
+
+  - id: wbc
+    test: WBC COUNT
+    aliases: ["WBC", "WBC COUNT", "Total Leukocyte Count"]
+    unit: thousand/uL
+    low: 4.5
+    high: 11.0
+    source_label: "CBC reference interval"
+    source_text: "Typical adult white blood cell reference interval is about 4.5 to 11.0 thousand/uL."
+    action_text: "Abnormal WBC values should be interpreted with infection history, medications, inflammation, and differential count."
+
+  - id: neutrophils
+    test: Neutrophils
+    aliases: ["Neutrophils", "Neutrophil %"]
+    unit: "%"
+    low: 40
+    high: 70
+    source_label: "CBC reference interval"
+    source_text: "Typical adult neutrophil proportion is approximately 40 to 70 percent."
+    action_text: "Neutrophil proportion should be interpreted with total WBC count and signs of infection or inflammation."
+
+  - id: lymphocytes
+    test: Lymphocytes
+    aliases: ["Lymphocytes", "Lymphocyte %"]
+    unit: "%"
+    low: 20
+    high: 40
+    source_label: "CBC reference interval"
+    source_text: "Typical adult lymphocyte proportion is approximately 20 to 40 percent."
+    action_text: "Lymphocyte proportion should be interpreted with total WBC count and clinical context."
+
+  - id: eosinophils
+    test: Eosinophils
+    aliases: ["Eosinophils", "Eosinophil %"]
+    unit: "%"
+    low: 0
+    high: 6
+    source_label: "CBC reference interval"
+    source_text: "Typical adult eosinophil proportion is approximately 0 to 6 percent."
+    action_text: "Eosinophil proportion may be relevant in allergy, asthma, and parasitic disease contexts."
+
+  - id: monocytes
+    test: Monocytes
+    aliases: ["Monocytes", "Monocyte %"]
+    unit: "%"
+    low: 0
+    high: 10
+    source_label: "CBC reference interval"
+    source_text: "Typical adult monocyte proportion is approximately 0 to 10 percent."
+    action_text: "Monocyte proportion should be interpreted with total WBC count and clinical context."
+
+  - id: basophils
+    test: Basophils
+    aliases: ["Basophils", "Basophil %"]
+    unit: "%"
+    low: 0
+    high: 2
+    source_label: "CBC reference interval"
+    source_text: "Typical adult basophil proportion is approximately 0 to 2 percent."
+    action_text: "Basophil proportion is usually interpreted with the rest of the differential count."
+
+  - id: platelet
+    test: PLATELET COUNT
+    aliases: ["Platelet", "Platelet Count", "PLT", "PLATELET COUNT"]
+    unit: thousand/uL
+    low: 150
+    high: 400
+    source_label: "CBC reference interval"
+    source_text: "Typical adult platelet reference interval is about 150 to 400 thousand/uL."
+    action_text: "Platelet abnormalities should be interpreted with bleeding history, infection, inflammation, and medication context."

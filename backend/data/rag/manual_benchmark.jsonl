@@ -1,0 +1,6 @@
+{"test":"Hemoglobin","value":"12.5","unit":"g/dL","reference":"13.0 - 17.0 g/dL","expected_status":"low","case":"hemoglobin low"}
+{"test":"WBC COUNT","value":"9.0","unit":"thousand/uL","reference":"4.5 - 11.0 thousand/uL","expected_status":"normal","case":"wbc normal"}
+{"test":"PLATELET COUNT","value":"150","unit":"thousand/uL","reference":"150 - 400 thousand/uL","expected_status":"normal","case":"platelet boundary"}
+{"test":"WBC COUNT","value":"9000","unit":"cumm","reference":"4.5 - 11.0 thousand/uL","expected_status":"unknown","case":"unit mismatch"}
+{"test":"Hb","value":"11.8","unit":"g/dL","reference":"12.0 - 15.0 g/dL","expected_status":"low","case":"ambiguous term"}
+{"test":"Unclear Marker","value":"22","unit":"arb","reference":"","expected_status":"unknown","case":"missing evidence"}
