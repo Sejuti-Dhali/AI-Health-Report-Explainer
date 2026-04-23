@@ -10,3 +10,5 @@ python-dotenv
 
 opencv-python
 PyMuPDF==1.26.0
+chromadb
+sentence-transformers

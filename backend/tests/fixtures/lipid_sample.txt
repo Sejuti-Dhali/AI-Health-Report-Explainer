@@ -1,0 +1,8 @@
+﻿Patient Name: Demo Two
+Age: 52 Years
+Gender: Male
+
+Total Cholesterol 235 mg/dL
+LDL Cholesterol 145 mg/dL
+HDL Cholesterol 38 mg/dL
+Triglycerides 210 mg/dL

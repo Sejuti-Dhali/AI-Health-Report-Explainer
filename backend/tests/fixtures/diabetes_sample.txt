@@ -1,0 +1,6 @@
+﻿Patient Name: Demo Three
+Age: 39 Years
+Gender: Female
+
+Fasting Glucose 126 mg/dL
+HbA1c 6.8 %

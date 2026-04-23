@@ -1,0 +1,7 @@
+﻿Patient Name: Demo Five
+Age: 31 Years
+Gender: Female
+
+TSH 6.1 mIU/L
+T3 92 ng/dL
+T4 6.1 ug/dL

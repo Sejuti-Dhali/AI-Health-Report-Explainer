@@ -1,0 +1,7 @@
+﻿Patient Name: Demo Four
+Age: 61 Years
+Gender: Female
+
+Creatinine 1.32 mg/dL
+BUN 28 mg/dL
+eGFR 58 mL/min/1.73m2
